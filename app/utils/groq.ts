@@ -6,7 +6,7 @@ const apiKey = Constants.expoConfig?.extra?.GROQ_API_KEY;
 
 export const groq = new Groq({ apiKey });
 
-const askGroq = async (messages: Chat[]) => {
+export const askGroq = async (messages: Chat[]) => {
   const chatCompletion = await groq.chat.completions.create({
     model: "openai/gpt-oss-20b",
     messages: messages,
@@ -14,5 +14,3 @@ const askGroq = async (messages: Chat[]) => {
 
   return chatCompletion.choices[0].message;
 };
-
-export default askGroq;

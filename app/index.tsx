@@ -16,7 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ArrowUpIcon from "../assets/images/arrow-up.svg";
 import ChatContainer from "./components/ui/chat-container";
 import type Chat from "./types/chat";
-import askGroq from "./utils/groq";
+import { askGroq } from "./utils/groq";
 
 const DEFAULT_MESSAGES: Chat[] = [
   {
