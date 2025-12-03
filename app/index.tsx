@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useFonts } from "expo-font";
+import { useEffect, useRef, useState } from "react";
 import {
-  FlatList,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
 } from "react-native";
 import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ArrowUpIcon from "../assets/images/arrow-up.svg";
 import ChatContainer from "./components/ui/chat-container";
@@ -21,12 +26,20 @@ const DEFAULT_MESSAGES: Chat[] = [
 ];
 
 export default function Index() {
+  const [fontsLoaded] = useFonts({
+    Inter: require("../assets/fonts/Inter-VariableFont_opsz,wght.ttf"),
+  });
   const { height } = useReanimatedKeyboardAnimation();
   const [messages, setMesages] = useState<Chat[]>(DEFAULT_MESSAGES);
   const [text, setText] = useState<string>("");
+  const scrollViewRef = useRef<ScrollView>(null);
   const [isSendActive, setIsSendActive] = useState<boolean>(false);
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: height.value }],
+  }));
+  const inputWidth = useSharedValue(75);
+  const animatedInputWrapper = useAnimatedStyle(() => ({
+    width: withTiming(`${inputWidth.value}%`, { duration: 250 }),
   }));
 
   const handleSend = async () => {
@@ -41,16 +54,34 @@ export default function Index() {
     setMesages((prev) => [...prev, aiReply as Chat]);
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 80);
+  }, [messages]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={messages}
-        keyExtractor={(_, idx) => idx.toString()}
-        renderItem={({ item }) => <ChatContainer message={item} />}
+      <ScrollView
+        ref={scrollViewRef}
         style={styles.chatList}
-        contentContainerStyle={{ gap: 8, paddingBottom: 400 }}
-      />
-      <Animated.View style={[styles.inputWrapper, animatedStyle]}>
+        contentContainerStyle={{ padding: 6, paddingBottom: 400, gap: 0 }}
+        onContentSizeChange={() =>
+          scrollViewRef.current?.scrollToEnd({ animated: true })
+        }
+      >
+        {messages.map((msg, idx) => (
+          <ChatContainer key={idx} message={msg} />
+        ))}
+      </ScrollView>
+
+      <Animated.View
+        style={[styles.inputWrapper, animatedStyle, animatedInputWrapper]}
+      >
         <TextInput
           value={text}
           onChangeText={(value) => {
@@ -63,6 +94,19 @@ export default function Index() {
           }}
           style={styles.input}
           placeholder="Ask math questions..."
+          onFocus={() => {
+            setTimeout(() => {
+              scrollViewRef.current?.scrollToEnd({ animated: true });
+              inputWidth.set(100);
+            }, 80);
+          }}
+          onBlur={() => {
+            if (text.trim().length === 0) {
+              inputWidth.set(75);
+            } else {
+              inputWidth.set(100);
+            }
+          }}
         />
         <TouchableOpacity
           onPress={handleSend}
@@ -76,16 +120,17 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1, backgroundColor: "#fff", fontFamily: "Inter" },
   chatList: {
     flex: 1,
     paddingHorizontal: 12,
   },
   inputWrapper: {
-    paddingHorizontal: 12,
-    backgroundColor: "#fff",
+    paddingHorizontal: 14,
     borderColor: "#ccc",
     position: "relative",
+    marginHorizontal: "auto",
+    width: "100%",
   },
   input: {
     backgroundColor: "#fff",
@@ -102,7 +147,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 41,
     height: 41,
-    right: 15.5,
+    right: 17,
     bottom: 3.5,
     display: "flex",
     justifyContent: "center",
