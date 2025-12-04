@@ -1,4 +1,5 @@
 import { useFonts } from "expo-font";
+import { ArrowUpIcon } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
   ScrollView,
@@ -13,10 +14,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ArrowUpIcon from "../../assets/images/arrow-up.svg";
 import ChatContainer from "../components/ui/chat-container";
 import type Chat from "../types/chat";
 import { askGroq } from "../utils/groq";
+
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
 
 const DEFAULT_MESSAGES: Chat[] = [
   {
@@ -31,10 +35,7 @@ export default function ChatPage() {
   });
   const { height } = useReanimatedKeyboardAnimation();
   const [messages, setMesages] = useState<Chat[]>(() => {
-    const local = localStorage.getItem("messages");
-    if (!local) return DEFAULT_MESSAGES;
-    const array = JSON.parse(local);
-    return array;
+    return DEFAULT_MESSAGES;
   });
   const [text, setText] = useState<string>("");
   const scrollViewRef = useRef<ScrollView>(null);
@@ -48,6 +49,7 @@ export default function ChatPage() {
   }));
 
   const handleSend = async () => {
+    if (text === "" || !text.trim()) return;
     const userMsg: Chat = { role: "user", content: text };
     setText("");
     setIsSendActive(false);
@@ -74,7 +76,7 @@ export default function ChatPage() {
       <ScrollView
         ref={scrollViewRef}
         style={styles.chatList}
-        contentContainerStyle={{ padding: 6, paddingBottom: 400, gap: 0 }}
+        contentContainerStyle={{ padding: 6, paddingBottom: 450, gap: 0 }}
         onContentSizeChange={() =>
           scrollViewRef.current?.scrollToEnd({ animated: true })
         }
@@ -84,41 +86,44 @@ export default function ChatPage() {
         ))}
       </ScrollView>
 
-      <Animated.View
-        style={[styles.inputWrapper, animatedStyle, animatedInputWrapper]}
-      >
-        <TextInput
-          value={text}
-          onChangeText={(value) => {
-            setText(value);
-            if (!value.trim() || value === "") {
-              setIsSendActive(false);
-              return;
-            }
-            setIsSendActive(true);
+      <Animated.View style={[styles.inputWrapper]}>
+        <Animated.View
+          style={{
+            display: "flex",
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 6,
+            paddingHorizontal: "7.5%",
           }}
-          style={styles.input}
-          placeholder="Ask math questions..."
-          onFocus={() => {
-            setTimeout(() => {
-              scrollViewRef.current?.scrollToEnd({ animated: true });
-              inputWidth.set(100);
-            }, 80);
-          }}
-          onBlur={() => {
-            if (text.trim().length === 0) {
-              inputWidth.set(75);
-            } else {
-              inputWidth.set(100);
-            }
-          }}
-        />
-        <TouchableOpacity
-          onPress={handleSend}
-          style={isSendActive ? styles.button : { width: 0, height: 0 }}
         >
-          <ArrowUpIcon />
-        </TouchableOpacity>
+          <AnimatedTextInput
+            value={text}
+            onChangeText={(value) => {
+              setText(value);
+              setIsSendActive(!!value.trim());
+            }}
+            style={[styles.input, animatedInputWrapper, animatedStyle]}
+            placeholder="Ask math questions..."
+            onFocus={() => {
+              setTimeout(() => {
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+                inputWidth.set(100);
+              }, 80);
+            }}
+            onBlur={() => {
+              inputWidth.set(text.trim().length === 0 ? 75 : 100);
+            }}
+          />
+
+          <AnimatedTouchableOpacity
+            onPress={handleSend}
+            style={[styles.button, animatedStyle]}
+          >
+            <ArrowUpIcon color={"white"} size={18} />
+          </AnimatedTouchableOpacity>
+        </Animated.View>
       </Animated.View>
     </SafeAreaView>
   );
@@ -132,28 +137,34 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     paddingHorizontal: 14,
-    borderColor: "#ccc",
+    paddingTop: 12,
+    borderColor: "rgba(0, 0, 0, 0.1)",
     position: "relative",
-    marginHorizontal: "auto",
     width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    gap: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    borderTopWidth: 0.9,
   },
   input: {
     backgroundColor: "#fff",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.5)",
+    borderColor: "rgba(0, 0, 0, 0.2)",
     borderRadius: 9999,
     fontSize: 16,
   },
+
   button: {
     borderRadius: 9999,
     backgroundColor: "#0A80FF",
-    position: "absolute",
-    width: 41,
-    height: 41,
-    right: 17,
-    bottom: 3.5,
+    width: 40,
+    height: 40,
+    borderColor: "rgba(0, 0, 0, 0.2)",
+    borderWidth: 1,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

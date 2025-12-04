@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0A80FF",
     maxWidth: "75%",
     marginLeft: "auto",
-    padding: 12,
+    padding: 8,
     borderRadius: 12,
     borderTopRightRadius: 0,
     paddingHorizontal: 14,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
   },
   assistantContainer: {
-    padding: 12,
+    padding: 0,
     borderRadius: 12,
     borderTopLeftRadius: 0,
     marginRight: "auto",
