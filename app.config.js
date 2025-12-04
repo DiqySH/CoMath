@@ -13,13 +13,22 @@ export default {
 
     extra: {
       GROQ_API_KEY: process.env.GROQ_API_KEY,
+      eas: {
+        projectId: "893f1dd3-d844-4068-a682-d2de70d8aa95",
+      },
     },
 
     ios: {
       supportsTablet: true,
+      infoPlist: {
+        NSMicrophoneUsageDescription:
+          "Aplikasi membutuhkan akses mikrofon untuk voice input.",
+      },
     },
 
     android: {
+      package: "com.diqyyahmad.CoMath",
+      permissions: ["RECORD_AUDIO"],
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
         foregroundImage: "./assets/images/android-icon-foreground.png",

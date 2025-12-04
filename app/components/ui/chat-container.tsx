@@ -1,8 +1,17 @@
 import type Chat from "@/app/types/chat";
+import { useFonts } from "expo-font";
 import { StyleSheet, Text, View } from "react-native";
 import Markdown from "react-native-markdown-display";
 
 export default function ChatContainer({ message }: { message: Chat }) {
+  const [fontsLoaded] = useFonts({
+    Inter: require("../../../assets/fonts/Inter-VariableFont_opsz,wght.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <View style={styles[`${message.role}Container`]}>
       {message.role === "assistant" ? (
@@ -27,6 +36,7 @@ const styles = StyleSheet.create({
   userText: {
     color: "#fff",
     fontSize: 16,
+    fontFamily: "Inter",
   },
   assistantContainer: {
     padding: 12,
@@ -37,6 +47,7 @@ const styles = StyleSheet.create({
   assistantText: {
     color: "#000",
     fontSize: 16,
+    fontFamily: "Inter",
   },
 });
 
@@ -45,12 +56,15 @@ const markdownStyles: Record<string, any> = {
   body: {
     color: "#000",
     fontSize: 16,
+    fontFamily: "Inter",
   },
   strong: {
     fontWeight: "bold",
+    fontFamily: "Inter",
   },
   em: {
     fontStyle: "italic",
+    fontFamily: "Inter",
   },
   code_block: {
     backgroundColor: "#F3F4F6",
