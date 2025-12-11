@@ -9,26 +9,17 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Background pattern */}
       <View style={styles.topBg} />
 
-      {/* Content */}
       <View style={styles.content}>
-        {/* Logo */}
         <View style={styles.logoWrapper}>
           <Image source={logo} style={styles.logo} />
         </View>
-
-        {/* Title */}
         <Text style={styles.title}>CoMath AI</Text>
-
-        {/* Description */}
         <Text style={styles.desc}>
           AI cerdas untuk menjawab pertanyaan dan membantu berbagai kebutuhanmu
           secara cepat dan akurat.
         </Text>
-
-        {/* Button */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => router.push("/chat")}

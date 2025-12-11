@@ -1,50 +1,95 @@
-# Welcome to your Expo app 👋
+# 📘 Co Math AI
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplikasi pembelajaran matematika berbasis **AI** yang dibangun dengan
+**React Native (Expo)**.\
+Aplikasi ini membantu pengguna mengerjakan soal matematika dengan cepat
+menggunakan teknologi AI, sekaligus memberikan langkah-langkah
+penyelesaian yang mudah dipahami.
 
-## Get started
+## ✨ Fitur Utama
 
-1. Install dependencies
+- 🔢 **Solve Math Problem** -- Pengguna dapat memasukkan soal
+  matematika dan AI akan memberikan jawabannya.
+- 🧠 **Penjelasan Langkah demi Langkah** -- Aplikasi menampilkan cara
+  pengerjaan.
+- 📷 **Scan Soal (optional)** -- Jika diimplementasikan.
+- ⚡ **UI Sederhana & Cepat** -- Dibangun dengan React Native dan
+  Expo.
 
-   ```bash
-   npm install
-   ```
+## 🛠️ Teknologi yang Digunakan
 
-2. Start the app
+- React Native (Expo)
+- JavaScript / TypeScript
+- Expo Router
+- OpenAI / Gemini / API AI lainnya
+- Axios / fetch API
 
-   ```bash
-   npx expo start
-   ```
+## 🚀 Cara Menjalankan Project
 
-In the output, you'll find options to open the app in a
+### 1️⃣ Clone Repository
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+    git clone https://github.com/username/comath-ai.git
+    cd comath-ai
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 2️⃣ Install Dependencies
 
-## Get a fresh project
+    npm install
 
-When you're ready, run:
+### 3️⃣ Jalankan Expo
 
-```bash
-npm run reset-project
+    npx expo start
+
+### 4️⃣ Scan QR Code
+
+Gunakan aplikasi **Expo Go** di Android/iOS.
+
+## 🔑 Setup API Key
+
+Buat file `.env`:
+
+    AI_API_KEY=YOUR_API_KEY_HERE
+
+## 📂 Struktur Folder
+
+    comath-ai/
+    │── app/
+    │── components/
+    │── hooks/
+    │── services/
+    │── assets/
+    │── .env
+    │── App.tsx
+    │── package.json
+
+## 📡 Contoh Request ke API
+
+```js
+import axios from "axios";
+
+export async function solveMath(question) {
+  const response = await axios.post(
+    "https://api.openai.com/v1/chat/completions",
+    {
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are a math solver AI." },
+        { role: "user", content: `Solve this math problem: ${question}` },
+      ],
+    },
+    {
+      headers: { Authorization: `Bearer ${process.env.AI_API_KEY}` },
+    }
+  );
+
+  return response.data.choices[0].message.content;
+}
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🧑‍🏫 Tujuan Pembuatan
 
-## Learn more
+Project ini dibuat untuk tugas sekolah, sebagai media pembelajaran AI
+dan React Native.
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📄 Lisensi
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Bebas digunakan dan dimodifikasi.
